@@ -57,16 +57,9 @@
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-semibold text-lg">{{ __('Questions') }}</h3>
-                                <button
-                                    type="button"
-                                    id="add-question"
-                                    class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                                >
-                                    {{ __('Add question') }}
-                                </button>
                             </div>
 
-                            <div id="questions-container" class="space-y-4">
+                            <div id="questions-container" class="space-y-4 mb-4">
                                 @php
                                     $oldQuestions = old('questions', [
                                         ['text' => '', 'correct_answer' => ''],
@@ -106,6 +99,16 @@
                                     </div>
                                 @endforeach
                             </div>
+
+                            <div class="pt-2">
+                                <button
+                                    type="button"
+                                    id="add-question"
+                                    class="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                                >
+                                    {{ __('Add question') }}
+                                </button>
+                            </div>
                         </div>
 
                         <div class="flex items-center justify-between pt-4">
@@ -132,7 +135,7 @@
 
             function addQuestion(text = '', correctAnswer = '') {
                 const wrapper = document.createElement('div');
-                wrapper.className = 'rounded-md border border-gray-200 p-4 space-y-3 question-item';
+                wrapper.className = 'rounded-md border border-gray-200 p-4 space-y-3 mt-4 question-item';
                 wrapper.innerHTML = `
                     <div>
                         <label class="block text-sm font-medium text-gray-700">{{ __('Question text') }}</label>
