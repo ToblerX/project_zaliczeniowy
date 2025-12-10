@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QuizBuilderController;
 
 // Public home page
 Route::get('/', function () {
@@ -32,6 +33,14 @@ Route::middleware('auth')->group(function () {
     // Submit all answers for a quiz (must be logged in so best score can be stored)
     Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])
         ->name('quizzes.submit');
+});
+
+// Quiz builder (admins only)
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/quiz-builder', [QuizBuilderController::class, 'index'])
+        ->name('quiz-builder.index');
+    Route::post('/quiz-builder', [QuizBuilderController::class, 'store'])
+        ->name('quiz-builder.store');
 });
 
 // Breeze-style profile management (used by navigation.blade links)
