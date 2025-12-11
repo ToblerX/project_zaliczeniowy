@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Quiz builder') }}
+            {{ isset($quiz) ? __('Edit quiz') : __('Quiz builder') }}
         </h2>
     </x-slot>
 
@@ -10,7 +10,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 space-y-6">
                     <p class="text-sm text-gray-600">
-                        {{ __('Create a new quiz by providing its name, optional description, and one or more questions with correct answers.') }}
+                        @if(isset($quiz))
+                            {{ __('Edit the quiz details and questions below. Changes will affect what students see next time they take this quiz.') }}
+                        @else
+                            {{ __('Create a new quiz by providing its name, optional description, and one or more questions with correct answers.') }}
+                        @endif
                     </p>
 
                     @if (session('status'))
@@ -29,8 +33,16 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('quiz-builder.store') }}" id="quiz-builder-form" class="space-y-6">
+                    <form
+                        method="POST"
+                        action="{{ isset($quiz) ? route('quiz-builder.update', $quiz) : route('quiz-builder.store') }}"
+                        id="quiz-builder-form"
+                        class="space-y-6"
+                    >
                         @csrf
+                        @if(isset($quiz))
+                            @method('PUT')
+                        @endif
 
                         <div>
                             <label for="title" class="block text-sm font-medium text-gray-700">{{ __('Quiz name') }}</label>
@@ -38,7 +50,7 @@
                                 type="text"
                                 name="title"
                                 id="title"
-                                value="{{ old('title') }}"
+                                value="{{ old('title', isset($quiz) ? $quiz->title : '') }}"
                                 required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
                             >
@@ -51,7 +63,7 @@
                                 id="description"
                                 rows="3"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                            >{{ old('description') }}</textarea>
+                            >{{ old('description', isset($quiz) ? $quiz->description : '') }}</textarea>
                         </div>
 
                         <div class="space-y-3">
@@ -59,15 +71,26 @@
                                 <h3 class="font-semibold text-lg">{{ __('Questions') }}</h3>
                             </div>
 
-                            <div id="questions-container" class="space-y-4 mb-4">
+                            <div id="questions-container" class="mb-4">
                                 @php
-                                    $oldQuestions = old('questions', [
-                                        ['text' => '', 'correct_answer' => ''],
-                                    ]);
+                                    if (old('questions')) {
+                                        $questions = old('questions');
+                                    } elseif (isset($quiz)) {
+                                        $questions = $quiz->questions->map(function ($question) {
+                                            return [
+                                                'text' => $question->text,
+                                                'correct_answer' => $question->correct_answer,
+                                            ];
+                                        })->toArray();
+                                    } else {
+                                        $questions = [
+                                            ['text' => '', 'correct_answer' => ''],
+                                        ];
+                                    }
                                 @endphp
 
-                                @foreach ($oldQuestions as $index => $q)
-                                    <div class="rounded-md border border-gray-200 p-4 space-y-3 question-item">
+                                @foreach ($questions as $index => $q)
+                                    <div class="rounded-md border border-gray-200 p-4 mb-4 question-item">
                                         <div>
                                             <label class="block text-sm font-medium text-gray-700">{{ __('Question text') }}</label>
                                             <input
@@ -112,12 +135,12 @@
                         </div>
 
                         <div class="flex items-center justify-between pt-4">
-                            <a href="{{ route('dashboard') }}" class="text-sm text-gray-600 hover:text-gray-900">
-                                &larr; {{ __('Back to dashboard') }}
+                            <a href="{{ route('quiz-builder.index') }}" class="text-sm text-gray-600 hover:text-gray-900">
+                                &larr; {{ __('Back to quiz management') }}
                             </a>
 
                             <x-primary-button>
-                                {{ __('Save quiz') }}
+                                {{ isset($quiz) ? __('Update quiz') : __('Save quiz') }}
                             </x-primary-button>
                         </div>
                     </form>

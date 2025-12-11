@@ -9,7 +9,18 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 space-y-6">
-                    <p>{{ __("You're logged in!") }}</p>
+                    <div class="flex items-center justify-between">
+                        <p>{{ __("You're logged in!") }}</p>
+
+                        @if(auth()->user() && auth()->user()->is_admin)
+                            <a
+                                href="{{ route('quiz-builder.index') }}"
+                                class="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                            >
+                                {{ __('Go to quiz builder') }}
+                            </a>
+                        @endif
+                    </div>
 
                     <div>
                         <h3 class="font-semibold text-lg mb-2">{{ __('Your quiz results') }}</h3>

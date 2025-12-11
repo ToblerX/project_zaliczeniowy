@@ -7,7 +7,7 @@
 <body>
     <h1>Quiz list</h1>
 
-    <ul>
+    <ul class="mt-2">
         @forelse ($quizzes as $quiz)
             <li>
                 <a href="{{ route('quizzes.show', $quiz) }}">{{ $quiz->title }}</a>

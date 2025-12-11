@@ -46,7 +46,7 @@
                             <form method="POST" action="{{ route('quizzes.submit', $quiz) }}" class="space-y-4">
                                 @csrf
 
-                                <ol class="space-y-3 list-decimal list-inside">
+                                <ol class="list-decimal list-inside">
                                     @foreach ($quiz->questions as $question)
                                         @php
                                             $isCorrect = $perQuestion[$question->id] ?? null;
@@ -61,8 +61,8 @@
                                                 $submittedAnswers[$question->id] ?? '');
                                         @endphp
 
-                                        <li>
-                                            <div class="{{ $baseClasses }} {{ $stateClasses }} space-y-2">
+                                        <li class="mb-4">
+                                            <div class="{{ $baseClasses }} {{ $stateClasses }}">
                                                 <p class="font-medium">{{ $question->text }}</p>
 
                                                 <input

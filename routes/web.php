@@ -35,12 +35,20 @@ Route::middleware('auth')->group(function () {
         ->name('quizzes.submit');
 });
 
-// Quiz builder (admins only)
+// Quiz builder & quiz administration (admins only)
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/quiz-builder', [QuizBuilderController::class, 'index'])
         ->name('quiz-builder.index');
+
+    Route::get('/quiz-builder/create', [QuizBuilderController::class, 'create'])
+        ->name('quiz-builder.create');
     Route::post('/quiz-builder', [QuizBuilderController::class, 'store'])
         ->name('quiz-builder.store');
+
+    Route::get('/quiz-builder/{quiz}/edit', [QuizBuilderController::class, 'edit'])
+        ->name('quiz-builder.edit');
+    Route::put('/quiz-builder/{quiz}', [QuizBuilderController::class, 'update'])
+        ->name('quiz-builder.update');
 });
 
 // Breeze-style profile management (used by navigation.blade links)
